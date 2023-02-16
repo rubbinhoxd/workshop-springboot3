@@ -7,8 +7,6 @@ public enum OrderStatus {
     SHIPPED(3),
     DELIVERED(4),
     CANCELED(5);
-
-
     private int code;
 
     private OrderStatus(int code){
