@@ -2,6 +2,7 @@ package com.projetoBackEnd.project.services;
 
 import com.projetoBackEnd.project.entities.User;
 import com.projetoBackEnd.project.repositories.UserRepository;
+import com.projetoBackEnd.project.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class UserService {
     }
     public User findById(Long id){
         Optional<User> obj = repository.findById(id);
-        return obj.get();
+        return obj.orElseThrow(() -> new ResourceNotFoundException(id));
     }
     public User updateUser(Long id, User obj){
         User entity = repository.getReferenceById(id); //referencia, mas so deixa o obj monitorado, ou seja, nao vai ao banco
