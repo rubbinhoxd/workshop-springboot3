@@ -1,5 +1,6 @@
 package com.projetoBackEnd.project.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -23,6 +24,9 @@ public class Product implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private Set<Category> categories = new HashSet<>(); //preferivel usar porque o mesmo produto não pode ter mais de uma ocorrencia em uma mesma categoria
+
+    @OneToMany(mappedBy = "id.product")
+    private Set<OrderItem> items = new HashSet<>();
 
     public Product(){
 
@@ -77,6 +81,15 @@ public class Product implements Serializable {
     }
     public Set<Category> getCategories(){
         return categories;
+    }
+    @JsonIgnore
+    public Set<Order> getOrders(){
+        Set<Order> set = new HashSet<>();
+
+        for(OrderItem orderItens : items){
+            set.add(orderItens.getOrder()); //percorrer minha collection associada ao meu produto, pra cada elemento eu adiciono meu pedido ao numero de pedido.
+        }
+        return set;
     }
 
     @Override
