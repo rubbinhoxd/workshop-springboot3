@@ -4,6 +4,7 @@ import com.projetoBackEnd.project.entities.User;
 import com.projetoBackEnd.project.repositories.UserRepository;
 import com.projetoBackEnd.project.services.exceptions.DatabaseException;
 import com.projetoBackEnd.project.services.exceptions.ResourceNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -30,9 +31,14 @@ public class UserService {
         return obj.orElseThrow(() -> new ResourceNotFoundException(id));
     }
     public User updateUser(Long id, User obj){
-        User entity = repository.getReferenceById(id); //referencia, mas so deixa o obj monitorado, ou seja, nao vai ao banco
-        updateData(entity, obj);
-        return repository.save(entity);
+        try {
+            User entity = repository.getReferenceById(id); //referencia, mas so deixa o obj monitorado, ou seja, nao vai ao banco
+            updateData(entity, obj);
+            return repository.save(entity);
+        } catch (EntityNotFoundException e){
+            throw new ResourceNotFoundException(id);
+        }
+
     }
 
     private void updateData(User entity, User obj) {
